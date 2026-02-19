@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import org.checkerframework.checker.lock.qual.GuardSatisfied;
+import org.checkerframework.checker.modifiability.qual.Growable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.plumelib.util.CollectionsPlume;
@@ -172,7 +173,7 @@ public final class Diff3File {
      * @throws Diff3ParseException if the input is malformed
      */
     @SuppressWarnings("PMD.AvoidThrowingNewInstanceOfSameException") // false positive warning
-    public static int parse(List<String> lines, int start, List<Diff3Hunk> sink)
+    public static int parse(List<String> lines, int start, @Growable List<Diff3Hunk> sink)
         throws Diff3ParseException {
       if (verbose) {
         System.out.printf("Starting to parse hunk starting at line %d.%n", start);
@@ -210,7 +211,7 @@ public final class Diff3File {
        * @throws Diff3ParseException if the input is malformed
        */
       private static int parse(
-          List<String> lines, int startLine, Diff3HunkKind kind, List<Diff3Hunk> sink)
+          List<String> lines, int startLine, Diff3HunkKind kind, @Growable List<Diff3Hunk> sink)
           throws Diff3ParseException {
         if (verbose) {
           System.out.printf("Starting to parse 3 sections at line %s.%n", startLine + 1);
