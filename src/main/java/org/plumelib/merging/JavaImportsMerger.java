@@ -15,6 +15,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
+import org.checkerframework.checker.modifiability.qual.Modifiable;
+import org.checkerframework.checker.modifiability.qual.Growable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
@@ -199,7 +201,7 @@ public class JavaImportsMerger extends Merger {
    * @param diff3file the diffs
    * @return the lines of the file, after inserting more import statements
    */
-  List<String> insertRemovedImports(List<String> fileLines, Diff3File diff3file) {
+  List<String> insertRemovedImports(@Growable List<String> fileLines, Diff3File diff3file) {
 
     // Find the first and last import lines in the file.
     // These are 1-based, so the first line in the file is line 1; therefore, these cannot be used
@@ -229,7 +231,7 @@ public class JavaImportsMerger extends Merger {
         System.out.printf("h=%s%n", h);
       }
       List<String> hunkSection2Lines = h.section2().lines();
-      List<String> importStatementsThatAreRemoved =
+      @Modifiable List<String> importStatementsThatAreRemoved =
           CollectionsPlume.filter(hunkSection2Lines, JavaLibrary::isImportStatement);
       // Do not reinsert deleted wildcard imports.
       importStatementsThatAreRemoved.removeIf(s -> s.endsWith("*;"));

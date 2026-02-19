@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import name.fraser.neil.plaintext.diff_match_patch;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
+import org.checkerframework.checker.modifiability.qual.Modifiable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.plumelib.javacparse.JavacParse;
@@ -71,7 +72,7 @@ public class JavaAnnotationsMerger extends Merger {
     if (verbose) {
       System.out.printf("JavaAnnotationsMerger: replacements = %s%n", replacements);
     }
-    List<String> newLines = CollectionsPlume.replace(cf.lines(), replacements);
+    @Modifiable List<String> newLines = CollectionsPlume.replace(cf.lines(), replacements);
     ConflictedFile result = new ConflictedFile(newLines, cf.path);
     return result;
   }
