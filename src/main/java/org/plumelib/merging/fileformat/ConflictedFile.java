@@ -81,7 +81,7 @@ public class ConflictedFile {
   private boolean hasConflict = false;
 
   /** True if the file had trivial conflicts that were resolved. */
-  private boolean hasTrivalConflict = false;
+  private boolean hasTrivialConflict = false;
 
   /**
    * Parse a conflicted file.
@@ -181,8 +181,8 @@ public class ConflictedFile {
     }
     List<MergeConflict> result = new ArrayList<>((hunks.size() + 1) / 2);
     for (ConflictElement ce : hunks) {
-      if (ce instanceof MergeConflict) {
-        result.add((MergeConflict) ce);
+      if (ce instanceof MergeConflict mc) {
+        result.add(mc);
       }
     }
     return result;
@@ -245,8 +245,8 @@ public class ConflictedFile {
    * @return true if this file contained a "trivial" conflict
    */
   @Pure
-  public boolean hasTrivalConflict() {
-    return hasTrivalConflict;
+  public boolean hasTrivialConflict() {
+    return hasTrivialConflict;
   }
 
   /**
@@ -305,8 +305,8 @@ public class ConflictedFile {
           + "hasConflict="
           + hasConflict
           + ";"
-          + "hasTrivalConflict="
-          + hasTrivalConflict
+          + "hasTrivialConflict="
+          + hasTrivialConflict
           + ";"
           + hunks.toString()
           + "}";
@@ -316,7 +316,7 @@ public class ConflictedFile {
   }
 
   /** One element of a conflicted file: either {@link MergeConflict} or {@link CommonLines}. */
-  public static interface ConflictElement {
+  public static sealed interface ConflictElement permits MergeConflict, CommonLines {
     /**
      * Returns the lines in the confict-file representation of this.
      *
@@ -738,7 +738,7 @@ public class ConflictedFile {
         }
         ConflictElement ce = MergeConflict.of(base, left, right, conflictStart, i + 1);
         if (ce instanceof CommonLines) {
-          hasTrivalConflict = true;
+          hasTrivialConflict = true;
         }
         result.add(ce);
         lastConflictEnder = i;
@@ -750,7 +750,7 @@ public class ConflictedFile {
         result.add(new CommonLines(lastCommon));
       }
       hunks = result;
-      if (hasTrivalConflict) {
+      if (hasTrivialConflict) {
         resetLinesAndFileContents();
       }
     } catch (Throwable e) {

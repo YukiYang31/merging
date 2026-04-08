@@ -33,14 +33,19 @@ public class JavaAnnotationsMerger extends Merger {
     super(verbose);
   }
 
+  /** A diff_match_patch instance for use by this class. */
+  private static final diff_match_patch dmp;
+
+  static {
+    dmp = new diff_match_patch();
+    dmp.Match_Threshold = 0.0f;
+    dmp.Patch_DeleteThreshold = 0.0f;
+  }
+
   @Override
   @Nullable ConflictedFile resolveConflicts(ConflictedFile cf, MergeState mergeState) {
 
     List<Replacement<String>> replacements = new ArrayList<>();
-
-    diff_match_patch dmp = new diff_match_patch();
-    dmp.Match_Threshold = 0.0f;
-    dmp.Patch_DeleteThreshold = 0.0f;
 
     for (MergeConflict mc : cf.mergeConflicts()) {
       String leftLines = StringsPlume.join("", mc.left());
@@ -89,19 +94,15 @@ public class JavaAnnotationsMerger extends Merger {
     for (Diff diff : diffs) {
       switch (diff.operation) {
         // DELETE means it was inserted in the right edit.
-        case INSERT:
-        case DELETE:
+        case INSERT, DELETE -> {
           if (isJavaAnnotations(diff.text)) {
             result.append(diff.text);
           } else {
             return null;
           }
-          break;
-        case EQUAL:
-          result.append(diff.text);
-          break;
-        default:
-          throw new Error("unexpected operation " + diff.operation);
+        }
+        case EQUAL -> result.append(diff.text);
+        default -> throw new Error("unexpected operation " + diff.operation);
       }
     }
     return result.toString();
@@ -121,10 +122,7 @@ public class JavaAnnotationsMerger extends Merger {
     }
     text = commentPattern.matcher(text).replaceAll(" ");
     text = text.strip();
-    if (text.isEmpty()) {
-      return true;
-    }
-    return false;
+    return text.isEmpty();
   }
 
   /**
