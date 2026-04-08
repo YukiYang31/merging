@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import org.checkerframework.checker.index.qual.LengthOf;
 import org.checkerframework.checker.interning.qual.InternedDistinct;
+import org.checkerframework.checker.modifiability.qual.Modifiable;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.nullness.qual.RequiresNonNull;
@@ -67,7 +68,7 @@ public class AdjacentDynamicProgramming {
   @SuppressWarnings("interning:assignment") // unique assignment
   // Cannot use `Collections.singletonList("IMPOSSIBLE")` because that isn't of type ArrayList,
   // which is the only thing that can be inserted into `table`.
-  private @InternedDistinct List<String> IMPOSSIBLE = new ArrayList<>(1);
+  private @InternedDistinct @Modifiable List<String> IMPOSSIBLE = new ArrayList<>(1);
 
   /** The first parent. */
   List<String> a;
