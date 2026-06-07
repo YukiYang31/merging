@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.lock.qual.GuardSatisfied;
 import org.checkerframework.checker.modifiability.qual.Modifiable;
+import org.checkerframework.checker.modifiability.qual.IteratorPolyMod;
 import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -610,7 +611,7 @@ public class ConflictedFile {
      * @param cls a list of CommonLines
      * @return all the lines in the input
      */
-    public static @Modifiable List<String> toLines(List<CommonLines> cls) {
+    public static @Modifiable @IteratorPolyMod List<String> toLines(List<CommonLines> cls) {
       List<String> result = new ArrayList<>();
       for (CommonLines cl : cls) {
         result.addAll(cl.textLines());
